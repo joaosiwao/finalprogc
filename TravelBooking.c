@@ -165,6 +165,18 @@ Agenda *BuscaAgenda(Agenda *raiz, Data busca) {
  * resultante ou NULL raiz e o nó sejam NULL */
 
 Agenda *InsereAgenda(Agenda *raiz, Agenda *nova) {
+    int *restricao, *restricao2;
+    restricao = BuscaInd(raiz,nova->reserva->codigo);
+    restricao2 = BuscaVoo(raiz,nova->reserva->voo->codigo);
+
+
+    if (restricao == 1){
+        return NULL;
+    }
+
+    if (restricao2 == 1){
+        return NULL;
+    }
     if (raiz == NULL) {
         return nova;
     }
@@ -247,6 +259,33 @@ Agenda *BuscaII(Agenda *raiz, Passageiro passageiro, Data data){
     return dir;
 }
 
+/*Busca por identificador do passageiro*/
+
+int *BuscaInd(Agenda *raiz, int codigo){
+
+    if (raiz->reserva->codigo = codigo){
+        return 1;
+    }
+
+    if(raiz != NULL){
+        BuscaInd(raiz->esq,codigo);
+        BuscaInd(raiz->dir,codigo);
+    }
+}
+
+/*Busca por identificador do voo*/
+
+int *BuscaVoo(Agenda *raiz, int voo){
+
+    if (raiz->reserva->voo->codigo = voo){
+        return 1;
+    }
+
+    if(raiz != NULL){
+        BuscaVoo(raiz->esq,voo);
+        BuscaVoo(raiz->dir,voo);
+    }
+}
 
 
 /*Edita a reserva*/
@@ -254,7 +293,33 @@ Agenda *BuscaII(Agenda *raiz, Passageiro passageiro, Data data){
 Agenda *Edita(Agenda *raiz, int codEditar){
     Agenda *edita;
     edita = BuscaCodigo(raiz,codEditar);
+    removeCodigo(raiz,codEditar);
+
+    Data *dataNova;
+    int ano, mes, dia;
+
+
+    printf("Digite a data no formato ano,mes,dia");
+    //scanfs
+
+    dataNova->ano = ano;
+    dataNova->mes = mes;
+    dataNova->dia = dia;
+
+    edita->reserva->passageiro; //esperar tabela hash
+
+    edita->reserva->voo; //esperar tabela hash
+
+
+    edita->reserva->data_viagem = dataNova;
+    edita->reserva->assento; //esperar tabela hash
+
+    //codigo permanece o mesmo
+
+
+    InsereAgenda(raiz, edita);
     /*I- Achar agenda; II- Criar Cópia; III- Remover Agenda original, IV- Inserir cópia modificada*/
+    /*boooool*/
 }
 
 
