@@ -108,21 +108,25 @@ int checaData(Data anterior, Data nova){
     return 0;
 }
 
-Data hoje, *aux;
-Data aux;
 
+Data hoje;
 
 /* Cria ABB */
 Agenda *IniciaABB(Reserva primeira){
 
+Data *aux = primeira.data_viagem;
+Reserva *prim;
+Reserva prim = primeira;
+
+
     //Dados Invalidos: (Data da viagem < Data de hoje)
-    if (checaData(hoje, primeira.data_viagem) == 0){
+    if (checaData(hoje, *aux) == 0){
         return NULL;
     }
 
-//Happy path: (completamente perdido na questao dos ponteiros)
+//Happy path:
     Agenda *raiz = (Agenda *)malloc(sizeof(Agenda));
-    raiz->reserva = &primeira;
+    raiz->reserva = prim;
     raiz->esq = NULL;
     raiz->dir = NULL;
     return raiz;
@@ -134,7 +138,9 @@ Agenda *IniciaABB(Reserva primeira){
  * em caso contrário. */
 
 
-Agenda *BuscaAgenda(Agenda *raiz, Data busca) {
+Agenda *BuscaAgenda(Agenda *raiz, Data busca) { 
+    Data *aux;
+    *aux = busca;
 
     if (raiz != NULL) {
         if (raiz->reserva->data_viagem == aux){
@@ -165,6 +171,8 @@ Agenda *BuscaAgenda(Agenda *raiz, Data busca) {
  * resultante ou NULL raiz e o nó sejam NULL */
 
 Agenda *InsereAgenda(Agenda *raiz, Agenda *nova) {
+    
+    // impede de criar uma reserva com codigo de voo ou de reserva repetida
     int *restricao, *restricao2;
     restricao = BuscaInd(raiz,nova->reserva->codigo);
     restricao2 = BuscaVoo(raiz,nova->reserva->voo->codigo);
@@ -180,8 +188,16 @@ Agenda *InsereAgenda(Agenda *raiz, Agenda *nova) {
     if (raiz == NULL) {
         return nova;
     }
+    // Insere a agenda
+    Data *aux1, *aux2;
+    aux1 = raiz->reserva->data_viagem;
+    aux2 = nova->reserva->data_viagem;
 
-    if (checaData(raiz->reserva->data_viagem, nova->reserva->data_viagem) == 1){
+    Data aux3, aux4;
+    aux3 = *aux1;
+    aux4 = *aux2;
+
+    if (checaData(aux3, aux4) == 1){
         raiz->dir = InsereAgenda(raiz->dir, nova);
     } else {
         raiz->esq = InsereAgenda(raiz->esq, nova);
@@ -228,10 +244,16 @@ bool RemoverAgenda() {
 /*Busca por (i) identificador do passageiro e código do voo*/
 
 Agenda *BuscaI(Agenda *raiz, Passageiro passageiro, int codigo){
+
+
+Passageiro *passageiroaux;
+*passageiroaux = passageiro;
+
+
     if (raiz == NULL){
         return NULL;
     }
-    if (raiz->reserva->codigo == codigo && raiz->reserva->passageiro == passageiro){
+    if (raiz->reserva->codigo == codigo && raiz->reserva->passageiro == passageiroaux){
         return raiz;
     }
     Agenda *esq = BuscaI(raiz->esq,passageiro, codigo);
@@ -245,10 +267,18 @@ Agenda *BuscaI(Agenda *raiz, Passageiro passageiro, int codigo){
 /*Busca por (ii) identificador do passageiro e data da viagem.*/
 
 Agenda *BuscaII(Agenda *raiz, Passageiro passageiro, Data data){
+
+Passageiro *passageiroaux;
+*passageiroaux = passageiro;
+
+Data *dataaux;
+*dataaux = data;
+
+
     if (raiz == NULL){
         return NULL;
     }
-    if (raiz->reserva->data_viagem == data && raiz->reserva->passageiro == passageiro){
+    if (raiz->reserva->data_viagem == dataaux && raiz->reserva->passageiro == passageiroaux){
         return raiz;
     }
     Agenda *esq = BuscaII(raiz->esq,passageiro,data);
@@ -321,35 +351,3 @@ Agenda *Edita(Agenda *raiz, int codEditar){
     /*I- Achar agenda; II- Criar Cópia; III- Remover Agenda original, IV- Inserir cópia modificada*/
     /*boooool*/
 }
-
-
-
-//int arvore;
-
-
-/*
-
-  isso provavelmente vai estar em outro arquivo
-
-int main(){
-    while (1){ //Base do programa
-
-        if (arvore == NULL){ // Caso não exista arvore ainda(ainda n sei como arrumar essa ideia de arvore)
-            Reserva raiz;
-        };
-
-        //Menu de operações:
-        int op;
-        printf("Digite o número relacionado a operação desejada: ");
-        printf("Criar nova reserva: 1");
-        
-        scanf("%d",&op);
-
-        if (op = 1){
-            No *abb_insere_no(No *raiz, No *no);
-        };
-        
-
-
-    }
-}*/
