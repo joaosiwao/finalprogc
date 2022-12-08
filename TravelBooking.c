@@ -173,10 +173,15 @@ Agenda *BuscaAgenda(Agenda *raiz, Data busca) {
 Agenda *InsereAgenda(Agenda *raiz, Agenda *nova) {
     
     // impede de criar uma reserva com codigo de voo ou de reserva repetida
-    int *restricao, *restricao2;
-    restricao = BuscaInd(raiz,nova->reserva->codigo);
-    restricao2 = BuscaVoo(raiz,nova->reserva->voo->codigo);
+    Data *auxiliar;
+    auxiliar = nova->reserva->data_viagem;
 
+
+    int *restricao, *restricao2, *restricao3, *restricao4;
+    restricao = BuscaInd(raiz,nova->reserva->passageiro->id);
+    restricao2 = BuscaVoo(raiz,nova->reserva->voo->codigo);
+    restricao3 = BuscaRes(raiz,nova->reserva->codigo);
+    restricao4 = BuscaDeR(raiz,nova->reserva->passageiro->id,*auxiliar);
 
     if (restricao == 1){
         return NULL;
@@ -185,6 +190,15 @@ Agenda *InsereAgenda(Agenda *raiz, Agenda *nova) {
     if (restricao2 == 1){
         return NULL;
     }
+
+    if (restricao3 == 1){
+       return NULL;
+    }
+
+    if (restricao4 == 1){
+       return NULL;
+    }
+
     if (raiz == NULL) {
         return nova;
     }
@@ -293,13 +307,27 @@ Data *dataaux;
 
 int *BuscaInd(Agenda *raiz, int codigo){
 
-    if (raiz->reserva->codigo = codigo){
+    if (raiz->reserva->passageiro->id = codigo){
         return 1;
     }
 
     if(raiz != NULL){
         BuscaInd(raiz->esq,codigo);
         BuscaInd(raiz->dir,codigo);
+    }
+}
+
+/*Busca por identificador de reserva*/
+
+int *BuscaRes(Agenda *raiz, int codigo){
+
+    if (raiz->reserva->codigo = codigo){
+        return 1;
+    }
+
+    if(raiz != NULL){
+        BuscaRes(raiz->esq,codigo);
+        BuscaRes(raiz->dir,codigo);
     }
 }
 
@@ -316,6 +344,42 @@ int *BuscaVoo(Agenda *raiz, int voo){
         BuscaVoo(raiz->dir,voo);
     }
 }
+
+int *BuscaDeR(Agenda *raiz, int id,Data nova){
+
+//Busca agenda editada
+    Data *aux;
+    *aux = nova;
+
+    if (raiz != NULL) {
+        if (raiz->reserva->data_viagem == aux){
+            if (raiz->reserva->passageiro->id = id){
+                return 1;
+            }
+        }
+
+        int checagemData;
+        Data inicial;
+        inicial = *raiz->reserva->data_viagem;
+
+        checagemData  = checaData(nova,inicial);
+
+
+        if (checagemData == 0) {
+            return BuscaDer(raiz->esq,id, nova);
+        } else {
+            return BuscaDer(raiz->dir,id, nova);
+        }
+    }
+
+    return NULL;
+
+
+}
+
+
+
+
 
 
 /*Edita a reserva*/
