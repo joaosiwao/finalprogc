@@ -1,4 +1,3 @@
-#include "TravelBooking.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -55,7 +54,7 @@ typedef struct Lista_passageiro {
     No_passageiro *primeiro;
 } Lista_passageiro;
 
-/*enum cod_assento {
+enum cod_assento {
     A0, B0, C0,
     A1, B1, C1,
     A2, B2, C2,
@@ -69,7 +68,7 @@ typedef struct Lista_passageiro {
 };
 
 typedef enum cod_assento Assento;
-*/
+
 
 typedef struct Reserva {
     int codigo;
