@@ -1,91 +1,103 @@
 #include "TravelBooking.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-struct data {
+typedef struct Data {
     int dia;
     int mes;
     int ano;
+} Data;
 
-    bool operator<(const data& outro) {
-        if (ano < outro.ano){
-            return 1;
-        }
-        if (ano == outro.ano){
-            if (mes < outro.mes){
-                return 1;
-            }
-            if (mes == outro.mes && dia <= outro.dia){
-                return 1;
-            }
-        }
-        return 0;
-    }
-    bool operator==(const data& outro) {
-        if (ano == outro.ano && mes == outro.mes && dia == outro.dia){
-            return 1;
-        }
-        return 0;
-    }
-};
-
-struct voo {
+typedef struct Voo {
     int codigo;
     char *origem;
     char *destino;
-};
+} Voo;
 
-struct no_voo {
+typedef struct No_voo {
     Voo *voo;
-    struct no_voo *proximo;
-};
+    struct No_voo *proximo;
+} No_voo;
 
-struct lista_voo {
-    struct no_voo *primeiro;
-};
+typedef struct Lista_voo {
+    No_voo *primeiro;
+} Lista_voo;
 
-struct passageiro {
+typedef struct Passageiro {
     int id;
     char *nome;
     char *endereco;
-};
 
-struct no_passageiro {
+} Passageiro;
+
+/*bool datas_iguais(struct Data primeiro, struct Data segundo) {
+    if (primeiro.ano == segundo.ano && primeiro.mes == segundo.mes && primeiro.dia == segundo.dia) {
+        return 1;
+    }
+    return 0;
+}
+
+bool passageiros_iguais(struct Passageiro primeiro, struct Passageiro segundo) {
+    if (primeiro.id == segundo.id && strcmp(primeiro.nome, segundo.nome) &&
+        strcmp(primeiro.endereco, segundo.endereco)) {
+        return 1;
+    }
+    return 0;
+}
+*/
+typedef struct No_passageiro {
     Passageiro *passageiro;
-    struct no_passageiro *proximo;
+    struct No_passageiro *proximo;
+} No_passageiro;
+
+typedef struct Lista_passageiro {
+    No_passageiro *primeiro;
+} Lista_passageiro;
+
+/*enum cod_assento {
+    A0, B0, C0,
+    A1, B1, C1,
+    A2, B2, C2,
+    A3, B3, C3,
+    A4, B4, C4,
+    A5, B5, C5,
+    A6, B6, C6,
+    A7, B7, C7,
+    A8, B8, C8,
+    A9, B9, C9
 };
 
-struct lista_passageiro {
-    struct no_passageiro *primeiro;
-};
+typedef enum cod_assento Assento;
+*/
 
-struct reserva{
+typedef struct Reserva {
     int codigo;
     Data *data_viagem;
     Passageiro *passageiro;
     Voo *voo;
     Assento assento;
-};
+} Reserva;
 
-struct agenda {
+typedef struct Agenda {
     Reserva *reserva;
-    Agenda *esq;
-    Agenda *dir;
-};
+    struct Agenda *esq;
+    struct Agenda *dir;
+} Agenda;
 
-struct trecho {
+typedef struct Trecho {
     Reserva *reserva;
-    struct trecho *proximo;
-};
+    struct Trecho *proximo;
+} Trecho;
 
-struct viagem {
-    struct trecho *trechos;
-};
+typedef struct Viagem {
+    Trecho *trechos;
+} Viagem;
 
-struct tabela_viagem {
+typedef struct Tabela_viagem {
     int tamanho;
     Viagem *tabela_hash;
-};
+} Tabela_viagem;
 
 
 //"agenda" é como nó -> struct q contem reserva, esq e dir
@@ -151,7 +163,7 @@ Agenda *BuscaAgenda(Agenda *raiz, Data busca) {
         Data inicial;
         inicial = *raiz->reserva->data_viagem;
 
-        checagemData  = checaData(busca,inicial);
+        checagemData = checaData(busca,inicial);
 
 
         if (checagemData == 0) {
@@ -164,8 +176,13 @@ Agenda *BuscaAgenda(Agenda *raiz, Data busca) {
     return NULL;
 }
 
+int BuscaInd(Agenda *raiz, int codigo);
 
+int BuscaVoo(Agenda *raiz, int voo);
 
+int *BuscaRes(Agenda *raiz, int codigo);
+
+int *BuscaDeR(Agenda *raiz, int id,Data nova);
 
 /* Adiciona uma agenda à esquerda(caso for menor) ou à direita(caso for maior ou igual) do no raiz. Retorna a raiz da árvore
  * resultante ou NULL raiz e o nó sejam NULL */
@@ -177,7 +194,7 @@ Agenda *InsereAgenda(Agenda *raiz, Agenda *nova) {
     auxiliar = nova->reserva->data_viagem;
 
 
-    int *restricao, *restricao2, *restricao3, *restricao4;
+    int restricao, restricao2, restricao3, restricao4;
     restricao = BuscaInd(raiz,nova->reserva->passageiro->id);
     restricao2 = BuscaVoo(raiz,nova->reserva->voo->codigo);
     restricao3 = BuscaRes(raiz,nova->reserva->codigo);
@@ -239,7 +256,7 @@ Agenda *BuscaCodigo(Agenda *raiz, int reserva){
 }
 
 /*Remove Agenda com um dado código de reserva*/
-bool RemoverAgenda() {
+/*bool RemoverAgenda() {
     if (raiz == NULL) {
         return NULL;
     }
@@ -253,7 +270,7 @@ bool RemoverAgenda() {
     }
     return dir;
 }
-
+*/
 
 /*Busca por (i) identificador do passageiro e código do voo*/
 
@@ -307,7 +324,7 @@ Data *dataaux;
 
 int *BuscaInd(Agenda *raiz, int codigo){
 
-    if (raiz->reserva->passageiro->id = codigo){
+    if (raiz->reserva->passageiro->id == codigo){
         return 1;
     }
 
@@ -321,7 +338,7 @@ int *BuscaInd(Agenda *raiz, int codigo){
 
 int *BuscaRes(Agenda *raiz, int codigo){
 
-    if (raiz->reserva->codigo = codigo){
+    if (raiz->reserva->codigo == codigo){
         return 1;
     }
 
@@ -335,7 +352,7 @@ int *BuscaRes(Agenda *raiz, int codigo){
 
 int *BuscaVoo(Agenda *raiz, int voo){
 
-    if (raiz->reserva->voo->codigo = voo){
+    if (raiz->reserva->voo->codigo == voo){
         return 1;
     }
 
@@ -353,7 +370,7 @@ int *BuscaDeR(Agenda *raiz, int id,Data nova){
 
     if (raiz != NULL) {
         if (raiz->reserva->data_viagem == aux){
-            if (raiz->reserva->passageiro->id = id){
+            if (raiz->reserva->passageiro->id == id){
                 return 1;
             }
         }
@@ -412,6 +429,4 @@ Agenda *Edita(Agenda *raiz, int codEditar){
 
 
     InsereAgenda(raiz, edita);
-    /*I- Achar agenda; II- Criar Cópia; III- Remover Agenda original, IV- Inserir cópia modificada*/
-    /*boooool*/
 }
