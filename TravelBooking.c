@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "tabela_hash.h"
 
 typedef struct Data {
     int dia;
@@ -30,21 +31,6 @@ typedef struct Passageiro {
 
 } Passageiro;
 
-/*bool datas_iguais(struct Data primeiro, struct Data segundo) {
-    if (primeiro.ano == segundo.ano && primeiro.mes == segundo.mes && primeiro.dia == segundo.dia) {
-        return 1;
-    }
-    return 0;
-}
-
-bool passageiros_iguais(struct Passageiro primeiro, struct Passageiro segundo) {
-    if (primeiro.id == segundo.id && strcmp(primeiro.nome, segundo.nome) &&
-        strcmp(primeiro.endereco, segundo.endereco)) {
-        return 1;
-    }
-    return 0;
-}
-*/
 typedef struct No_passageiro {
     Passageiro *passageiro;
     struct No_passageiro *proximo;
@@ -98,10 +84,6 @@ typedef struct Tabela_viagem {
     Viagem *tabela_hash;
 } Tabela_viagem;
 
-
-//"agenda" é como nó -> struct q contem reserva, esq e dir
-
-
 //retorna 0 caso a data nova seja menor que a antiga (esquerda) e 1 caso a data nova seja maior ou igual a antiga (direita).
 int checaData(Data anterior, Data nova){
 
@@ -123,11 +105,16 @@ int checaData(Data anterior, Data nova){
 Data hoje;
 
 /* Cria ABB */
-Agenda *IniciaABB(Reserva primeira){
+Agenda *IniciaABB(){
 
-Data *aux = primeira.data_viagem;
+Reserva *primeira;
 Reserva *prim;
-Reserva prim = primeira;
+primeira = PreencheReserva();
+prim = primeira;
+
+
+
+Data *aux = prim->data_viagem;
 
 
     //Dados Invalidos: (Data da viagem < Data de hoje)
@@ -399,30 +386,123 @@ int *BuscaDeR(Agenda *raiz, int id,Data nova){
 Agenda *Edita(Agenda *raiz, int codEditar){
     Agenda *edita;
     edita = BuscaCodigo(raiz,codEditar);
+
+    printf("Qual campo deseja editar? \n");
+    printf("1- Data \n");
+    printf("2- Passageiro \n");
+    printf("3- Assento \n");
+    printf("4- Voo \n");
+    int opc;
+    scanf("%d",&opc);
+
+    if (opc = 1){
+        edita->reserva->data_viagem = cadastrar_data(edita->reserva);
+    }
+    if (opc = 2){
+        edita->reserva->passageiro = cadastrar_passageiro(edita->reserva);
+    }
+    if (opc = 3){
+        edita->reserva->assento = cadastrar_assento(edita->reserva);
+    }
+    if (opc = 4){
+        edita->reserva->voo = cadastrar_voo(edita->reserva);
+    }
     removeCodigo(raiz,codEditar);
-    PreencheReserva();
     InsereAgenda(raiz, edita);
 }
 
 /*Preenche os dados de uma nova Reserva*/
 
 Reserva *PreencheReserva(){
-    Reserva fill;
+    Reserva *fill;
 
-    int codigonovo;
-    printf("digite o codigo: \n");
-    scanf("%d",&codigonovo);
-    fill.codigo = codigonovo;
+    cadastrar_data(fill);
+    cadastrar_passageiro(fill);
+    cadastrar_assento(fill);
+    cadastrar_voo(fill);
 
-    Data *dataNova;
-    int ano, mes, dia;
-    printf("Digite a data no formato ano,mes,dia: \n");
-    scanf("%d",&ano);
-    scanf("%d",&mes);
-    scanf("%d",&dia);
-    dataNova->ano = ano;
-    dataNova->mes = mes;
-    dataNova->dia = dia;
-    fill.data_viagem = dataNova;
+    return fill;
+}
 
+
+/*Funções|métodos auxiliares para manipular as tads da Reserva*/
+Reserva *cadastrar_data(Reserva* reserva){
+    Data* data = (Data*)malloc(sizeof(Data));
+
+    printf("Informe o dia da viagem:");
+    scanf("%i", &data->dia);
+    fflush(stdin);
+
+    printf("Informe o mes da viagem:");
+    scanf("%i", &data->mes);
+    fflush(stdin);
+    
+    printf("Informe o ano da viagem:");
+    scanf("%i", &data->ano);
+    fflush(stdin);
+
+    reserva->data_viagem = data;
+    return reserva;
+}
+
+char *alocar_char(int tam){
+    char *str = (char*)(malloc(sizeof(char)*tam));
+    return str;
+}
+
+Reserva *cadastrar_passageiro(Reserva *reserva){
+    Passageiro *passageiro = (Passageiro*)malloc(sizeof(Passageiro));
+    passageiro->nome = alocar_char(50);
+    passageiro->endereco = alocar_char(50);
+
+    printf("Informe o id do passageiro: \n");
+    scanf("%d", &passageiro->id);
+    fflush(stdin);
+
+    printf("Informe o nome do passageiro: \n");
+    gets(passageiro->nome);
+    fflush(stdin);
+
+    printf("Informe o endereco do passageiro: \n");
+    gets(passageiro->endereco);
+    fflush(stdin);
+
+    reserva->passageiro = passageiro;
+    return reserva;
+}
+
+Reserva *cadastrar_voo(Reserva *reserva){
+    Voo *voo = (Voo*)malloc(sizeof(Voo));
+    voo->origem = alocar_char(50);
+    voo->destino = alocar_char(50);
+
+    printf("Informe o codigo do voo: \n");
+    scanf("%d", &voo->codigo);
+    fflush(stdin);
+
+    printf("Informe a origem do voo: \n");
+    gets(voo->origem);
+    fflush(stdin);
+
+    printf("Informe a destino do voo: \n");
+    gets(voo->destino);
+    fflush(stdin);
+
+    reserva->voo = voo;
+    return reserva;
+}
+
+Reserva *cadastrar_assento(Reserva *reserva){
+    Assento novo_assento;
+    Assento *assento_aux = (Assento*)malloc(sizeof(Assento));
+    printf("Informe o num do assento 0 a 30: \n");
+    scanf("%d", assento_aux);
+    
+    for(novo_assento = A0; novo_assento<=C9; novo_assento++){
+        if(novo_assento == *assento_aux){
+            printf("Assento: %d\n", novo_assento);
+            reserva->assento = *assento_aux;
+        }
+    } 
+    return reserva;
 }
