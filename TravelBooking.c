@@ -394,38 +394,35 @@ int *BuscaDeR(Agenda *raiz, int id,Data nova){
 }
 
 
-
-
-
-
 /*Edita a reserva*/
 
 Agenda *Edita(Agenda *raiz, int codEditar){
     Agenda *edita;
     edita = BuscaCodigo(raiz,codEditar);
     removeCodigo(raiz,codEditar);
+    PreencheReserva();
+    InsereAgenda(raiz, edita);
+}
+
+/*Preenche os dados de uma nova Reserva*/
+
+Reserva *PreencheReserva(){
+    Reserva fill;
+
+    int codigonovo;
+    printf("digite o codigo: \n");
+    scanf("%d",&codigonovo);
+    fill.codigo = codigonovo;
 
     Data *dataNova;
     int ano, mes, dia;
-
-
-    printf("Digite a data no formato ano,mes,dia");
-    //scanfs
-
+    printf("Digite a data no formato ano,mes,dia: \n");
+    scanf("%d",&ano);
+    scanf("%d",&mes);
+    scanf("%d",&dia);
     dataNova->ano = ano;
     dataNova->mes = mes;
     dataNova->dia = dia;
+    fill.data_viagem = dataNova;
 
-    edita->reserva->passageiro; //esperar tabela hash
-
-    edita->reserva->voo; //esperar tabela hash
-
-
-    edita->reserva->data_viagem = dataNova;
-    edita->reserva->assento; //esperar tabela hash
-
-    //codigo permanece o mesmo
-
-
-    InsereAgenda(raiz, edita);
 }
