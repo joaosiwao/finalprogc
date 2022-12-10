@@ -68,6 +68,7 @@ typedef struct Agenda {
     Reserva *reserva;
     struct Agenda *esq;
     struct Agenda *dir;
+    struct Agenda *pai;
 } Agenda;
 
 typedef struct Trecho {
@@ -240,23 +241,57 @@ Agenda *BuscaCodigo(Agenda *raiz, int reserva){
     }
     return dir;
 }
-
-/*Remove Agenda com um dado código de reserva*/
-/*bool RemoverAgenda() {
-    if (raiz == NULL) {
+Agenda *BuscaAnterior(Agenda *raiz, int reserva){
+    if (raiz == NULL){
         return NULL;
     }
-    if (raiz->reserva->codigo == reserva) {
+    if (raiz->esq->reserva->codigo-> == reserva){
         return raiz;
     }
-    Agenda *esq = BuscaCodigo(raiz->esq, reserva);
-    Agenda *dir = BuscaCodigo(raiz->dir, reserva);
-    if (esq != NULL) {
+    if (raiz->dir->reserva->codigo-> == reserva){
+        return raiz;
+    }
+    Agenda *esq = BuscaCodigo(raiz->esq,reserva);
+    Agenda *dir = BuscaCodigo(raiz->dir,reserva);
+    if(esq != NULL){
         return esq;
     }
     return dir;
 }
-*/
+
+/*Remove Agenda com um dado código de reserva*/
+/*Agenda *removeCodigo(Agenda *raiz, int codigo){
+    Agenda noRemove = BuscaCodigo(*raiz, codigo);
+    Agenda antRemove = BuscaAnterior(*raiz, codigo);
+    if(noRemove->esq == NULL && noRemove.dir == NULL){
+        *Faz o nó anterior apontar para NULL seja onde antes apontava pra ele
+    }
+    if(noRemove->esq == NULL){
+    }
+    if(noRemove->dir == NULL){
+    }
+
+        Agenda noMinimo = BuscaMinimo(*noRemove);
+
+}
+Agenda *BuscaMinimo(Agenda *raiz){
+    *Vai ao máximo a esq do Nó enquanto for diferente de NULL.
+
+    Agenda aux = raiz->dir;
+
+    while(aux->esq != Null){
+        aux = aux->esq;
+    }
+
+}
+void Transplante(Agenda *raiz){
+     *I-Identifica nó a se remover
+     *II- Percorre com BuscaMinimo(noRemover->dir)
+     *III- Armazena em uma variável e substitui por NULL na abb
+     *IV- Substitui o noRemove pela variável
+     *V- Retorna abb alterada
+}*/
+
 
 /*Busca por (i) identificador do passageiro e código do voo*/
 
